@@ -215,9 +215,23 @@ int main()
 {
 	glfwInit();
 
-	auto window{glfwCreateWindow(screenWidth, screenHeight, "Textured Cube", nullptr, nullptr)};
+	// Using OpenGL 4.5 Core 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	auto window{glfwCreateWindow(screenWidth, screenHeight, "Textured Cube", nullptr, nullptr)};
+	if (!window)
+	{
+		std::cout << "Failed to create GLFW window.\n";
+		
+		glfwTerminate();
+		
+		return -1;
+	}
+	
 	glfwMakeContextCurrent(window);
+		
 	glewInit();
 
 	init();
