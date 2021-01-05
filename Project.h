@@ -1,5 +1,8 @@
 #pragma once
 
-void init(void);
+#include <string>
+#include <GL/glew.h>
 
-void loadTexture(GLuint& texture, std::string texturepath);
+void init();
+void loadTexture(GLuint& texture, const std::string& texturePath);
+void display();
