@@ -5,6 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "Project.h"
+#include "camera.h"
 #include "stb_image.h"
 #include "LoadShaders.h"
 #include <GL/glew.h>
@@ -38,8 +39,17 @@ GLuint VAOs[numVAOs]{};
 GLuint VBOs[numVBOs]{};
 GLuint textures[numTextures]{};
 
-// Shader program -- find a way for this to not be global
+// Shader program
 GLuint shaderProgram{};
+
+// Camera
+Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
+auto lastX{static_cast<float>(screenWidth) / 2.0f};
+auto lastY{static_cast<float>(screenHeight) / 2.0f};
+auto firstMouse{true};
+
+// Delta time
+float deltaTime{};
 
 //----------------------------------------------------------------------------
 //
@@ -184,11 +194,11 @@ void update()
 	//model = glm::translate(model, glm::vec3{0.0f, 0.0f, -1.0f});
 
 	// creating the view matrix
-	auto view{glm::mat4{1.0f}};
+	auto view{camera.GetViewMatrix()};
 	view = glm::translate(view, glm::vec3{0.0f, 0.0f, -3.0f});
 
 	// creating the projection matrix
-	const auto projection{glm::perspective(45.0f, static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f)};
+	const auto projection{glm::perspective(glm::radians(camera.GetFov()), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f)};
 
 	// Adding all matrices up to create combined matrix
 	const auto mvp{projection * view * model};
@@ -224,12 +234,55 @@ void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
 	 glViewport(0, 0, width, height);
 }
 
+// Callback on mouse cursor input
+void mouseCallback(struct GLFWwindow* window, double xPos, double yPos)
+{
+	// Handle first mouse input upon capture
+	if (firstMouse)
+	{
+		lastX = xPos;
+		lastY = yPos;
+
+		firstMouse = false;
+	}
+	
+	// Calculate mouse offset since last frame
+	auto xOffset{xPos - lastX};
+	auto yOffset{lastY - yPos}; // Y coordinates go from bottom top so operands are reverse from xOffset
+	lastX = xPos;
+	lastY = yPos;
+
+	camera.ProcessMouseMovement(xOffset, yOffset);
+}
+
 // Process latest input received
 void processReceivedInput(GLFWwindow* window)
 {
 	// Close window when escape is pressed
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+	// Camera movement
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(CameraMovement::FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(CameraMovement::BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(CameraMovement::LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(CameraMovement::RIGHT, deltaTime);
+}
+
+// Calculate time since last frame -- the delta
+void calcDeltaTime()
+{
+	static auto timeLast{0.0f};
+
+	const auto timeNow{static_cast<float>(glfwGetTime())};
+	
+	deltaTime = timeNow - timeLast;
+	
+	timeLast = timeNow;
 }
 
 //----------------------------------------------------------------------------
@@ -259,6 +312,11 @@ int main()
 	// Viewport
 	glViewport(0, 0, screenWidth, screenHeight);
 	glfwSetFramebufferSizeCallback(window,frameBufferResizeCallback);
+
+	// Capture and hide cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Register callback to call on mouse input
+	glfwSetCursorPosCallback(window, mouseCallback);
 	
 	glewInit();
 
@@ -266,6 +324,8 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
+		calcDeltaTime();
+		
 		processReceivedInput(window);
 		
 		// uncomment to draw only wireframe
