@@ -10,11 +10,11 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp> //includes GLM
+#include <glm/glm.hpp>
 #include <glm/fwd.hpp>
-#include <glm/ext/matrix_transform.hpp> // GLM: translate, rotate
-#include <glm/ext/matrix_clip_space.hpp> // GLM: perspective and ortho 
-#include <glm/gtc/type_ptr.hpp> // GLM: access to the value_ptr
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 #define BUFFER_OFFSET(a) ((void*)(a))
@@ -194,7 +194,6 @@ void loadTexture(GLuint& texture, const std::string& texturePath)
 void display()
 {
 	static constexpr GLfloat black[]{0.0f, 0.0f, 0.0f, 0.0f};
-
 	glClearBufferfv(GL_COLOR, 0, black);
 	glClear(GL_COLOR_BUFFER_BIT);
 	// bind textures on corresponding texture units
@@ -205,6 +204,20 @@ void display()
 	glBindVertexArray(VAOs[Triangles]);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	glDrawElements(GL_TRIANGLES, NumVertices, GL_UNSIGNED_INT, 0);
+}
+
+// Resize viewport on window resize
+void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
+{
+	 glViewport(0, 0, width, height);
+}
+
+// Process latest input received
+void processReceivedInput(GLFWwindow* window)
+{
+	// Close window when escape is pressed
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
 }
 
 //----------------------------------------------------------------------------
@@ -229,15 +242,20 @@ int main()
 		
 		return -1;
 	}
-	
 	glfwMakeContextCurrent(window);
-		
+
+	// Viewport
+	glViewport(0, 0, screenWidth, screenHeight);
+	glfwSetFramebufferSizeCallback(window,frameBufferResizeCallback);
+	
 	glewInit();
 
 	init();
 
 	while (!glfwWindowShouldClose(window))
 	{
+		processReceivedInput(window);
+		
 		// uncomment to draw only wireframe 
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -249,4 +267,6 @@ int main()
 	glfwDestroyWindow(window);
 
 	glfwTerminate();
+
+	return 0;
 }
