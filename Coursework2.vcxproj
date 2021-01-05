@@ -168,8 +168,8 @@
     <ClInclude Include="Project.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="media\triangles.frag" />
-    <None Include="media\triangles.vert" />
+    <None Include="media\shader.frag" />
+    <None Include="media\shader.vert" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -19,18 +19,27 @@
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
-enum VAO_IDs{Triangles, Indices, Colours, Tex, NumVAOs = 1};
-enum Buffer_IDs{ArrayBuffer, NumBuffers = 4};
-enum Attrib_IDs{vPosition = 0, cPosition = 1, tPosition = 2};
+enum VAO_Ids{objFirst};
+enum VBO_Ids{Vertices, Indices, Colours, Tex};
+enum Attrib_Ids{posVertex = 0, posTexCoord = 1};
+enum Text_Ids{textFirst};
 
-GLuint VAOs[NumVAOs]{};
-GLuint Buffers[NumBuffers]{};
-GLuint texture1{};
+constexpr auto numVAOs{1};
+constexpr auto numVBOs{4};
 
-constexpr GLuint NumVertices{36};
+constexpr auto numVertices{36};
+constexpr auto attribStride{5};
+constexpr auto numTextures{1};
 
-constexpr GLuint screenWidth{800};
-constexpr GLuint screenHeight{600};
+constexpr auto screenWidth{800};
+constexpr auto screenHeight{600};
+
+GLuint VAOs[numVAOs]{};
+GLuint VBOs[numVBOs]{};
+GLuint textures[numTextures]{};
+
+// Shader program -- find a way for this to not be global
+GLuint shaderProgram{};
 
 //----------------------------------------------------------------------------
 //
@@ -41,27 +50,58 @@ void init()
 	// GLEW provides functionality to load shaders from files
 	ShaderInfo shaders[]
 	{
-		{GL_VERTEX_SHADER, "media/triangles.vert"},
-		{GL_FRAGMENT_SHADER, "media/triangles.frag"},
+		{GL_VERTEX_SHADER, "media/shader.vert"},
+		{GL_FRAGMENT_SHADER, "media/shader.frag"},
 		{GL_NONE, nullptr}
 	};
 
-	const auto shaderProgram{LoadShaders(shaders)};
+	shaderProgram = LoadShaders(shaders);
 	glUseProgram(shaderProgram);
 
-	constexpr GLfloat vertices[][3]
-	{
-		{0.5f,  0.5f, -0.5f},  //0 top right
-		{0.5f, -0.5f, -0.5f},  //1 bottom right
-		{-0.5f, -0.5f, -0.5f}, //2 bottom left
-		{-0.5f,  0.5f, -0.5f},  //3 top left
+	constexpr GLfloat vertices[]{
+	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-		{0.5f,  0.5f, 0.5f},  //4 top right
-		{0.5f, -0.5f, 0.5f},  //5 bottom right
-		{-0.5f, -0.5f, 0.5f}, //6 bottom left
-		{-0.5f,  0.5f, 0.5f}  //7 top left 
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
-	
+
 	constexpr GLuint indices[][3]
 	{  // note that we start from 0!
 		{0, 3, 1},  // first Triangle front
@@ -78,80 +118,28 @@ void init()
 		{7, 5, 6}   // second Triangle
 	};
 
-	constexpr GLfloat colours[][4]
-	{
-		{1.0f, 0.0f, 0.0f, 1.0f},
-		{0.0f, 1.0f, 0.0f, 1.0f},
-		{0.0f, 0.0f, 1.0f, 1.0f},  
-		{1.0f, 1.0f, 0.0f, 1.0f},
-		{1.0f, 0.0f, 0.0f, 1.0f},
-		{0.0f, 1.0f, 0.0f, 1.0f}, 
-		{0.0f, 0.0f, 1.0f, 1.0f},
-		{1.0f, 1.0f, 0.0f, 1.0f} 
-	};
-	
-	constexpr GLfloat textureCoords[][2]
-	{
-		{1.0f, 1.0f},
-		{1.0f, 0.0f},
-		{0.0f, 0.0f},
-		{0.0f, 1.0f},
-		{0.0f, 1.0f},
-		{0.0f, 0.0f},
-		{1.0f, 0.0f},
-		{1.0f, 1.0f}
-	};
-
 	// Buffer initialisation
-	glGenVertexArrays(NumVAOs, VAOs);
-	glBindVertexArray(VAOs[Triangles]);
+	glGenVertexArrays(numVAOs, VAOs);
+	glBindVertexArray(VAOs[objFirst]);
 	
-	glGenBuffers(NumBuffers, Buffers);
+	glGenBuffers(numVBOs, VBOs);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Triangles]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[Vertices]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[Indices]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[Indices]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT,GL_FALSE, 0, BUFFER_OFFSET(0));
-	
-	//Colour Binding
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Colours]);
-	glBufferStorage(GL_ARRAY_BUFFER, sizeof(colours), colours, 0);
+	// Vertex position attribute pointers
+	glVertexAttribPointer(posVertex, 3, GL_FLOAT, GL_FALSE, attribStride * sizeof(GLfloat), BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(posVertex);
 
-	glVertexAttribPointer(cPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	// Texture coordinate attribute pointer
+	glVertexAttribPointer(posTexCoord, 2, GL_FLOAT, GL_FALSE, attribStride * sizeof(GLfloat), BUFFER_OFFSET(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(posTexCoord);
 
-	//Texture Binding
-	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Tex]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords), textureCoords, GL_STATIC_DRAW);
-	glVertexAttribPointer(tPosition, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-
-	loadTexture(texture1, "media/textures/awesomeface.png");
+	loadTexture(textures[textFirst], "media/textures/awesomeface.png");
 	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-
-	// creating the model matrix
-	auto model{glm::mat4{1.0f}};
-	model = glm::scale(model, glm::vec3{2.0f, 2.0f, 2.0f});
-	model = glm::rotate(model, glm::radians(-40.0f), glm::vec3{1.0f, 0.0f, 0.0f});
-	model = glm::translate(model, glm::vec3{0.0f, 0.0f, -1.0f});
-
-	// creating the view matrix
-	auto view{glm::mat4{1.0f}};
-	view = glm::translate(view, glm::vec3{0.0f, 0.0f, -2.0f});
-
-	// creating the projection matrix
-	const auto projection{glm::perspective(45.0f, 4.0f / 3, 0.1f, 20.0f)};
-
-	// Adding all matrices up to create combined matrix
-	const auto mvp{projection * view * model};
-
-	//adding the Uniform to the shader
-	const auto mvpLoc{glGetUniformLocation(shaderProgram, "mvp")};
-	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-	glEnableVertexAttribArray(vPosition);
-	glEnableVertexAttribArray(cPosition); 
-	glEnableVertexAttribArray(tPosition);
 }
 
 void loadTexture(GLuint& texture, const std::string& texturePath)
@@ -187,23 +175,47 @@ void loadTexture(GLuint& texture, const std::string& texturePath)
 	stbi_image_free(textureData);
 }
 
+void update()
+{
+	// creating the model matrix
+	auto model{glm::mat4{1.0f}};
+	//model = glm::scale(model, glm::vec3{2.0f, 2.0f, 2.0f});
+	model = glm::rotate(model, glm::radians(50.0f) * static_cast<float>(glfwGetTime()), glm::vec3{0.5f, 1.0f, 0.0f});
+	//model = glm::translate(model, glm::vec3{0.0f, 0.0f, -1.0f});
+
+	// creating the view matrix
+	auto view{glm::mat4{1.0f}};
+	view = glm::translate(view, glm::vec3{0.0f, 0.0f, -3.0f});
+
+	// creating the projection matrix
+	const auto projection{glm::perspective(45.0f, static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f)};
+
+	// Adding all matrices up to create combined matrix
+	const auto mvp{projection * view * model};
+
+	//adding the Uniform to the shader
+	const auto mvpLoc{glGetUniformLocation(shaderProgram, "mvp")};
+	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+}
+
 //----------------------------------------------------------------------------
 //
 // display
 //
 void display()
 {
-	static constexpr GLfloat black[]{0.0f, 0.0f, 0.0f, 0.0f};
-	glClearBufferfv(GL_COLOR, 0, black);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0f, 0.25f, 0.5f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// bind textures on corresponding texture units
-	glFrontFace(GL_CW);
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
+	/*glFrontFace(GL_CW);*/
+	/*glCullFace(GL_BACK);*/
+	/*glEnable(GL_CULL_FACE);*/
+	glEnable(GL_DEPTH_TEST);
 
-	glBindVertexArray(VAOs[Triangles]);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glDrawElements(GL_TRIANGLES, NumVertices, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(VAOs[objFirst]);
+	glBindTexture(GL_TEXTURE_2D, textures[textFirst]);
+	//glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, numVertices);
 }
 
 // Resize viewport on window resize
@@ -256,9 +268,11 @@ int main()
 	{
 		processReceivedInput(window);
 		
-		// uncomment to draw only wireframe 
+		// uncomment to draw only wireframe
+		// 
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+		
+		update();
 		display();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
