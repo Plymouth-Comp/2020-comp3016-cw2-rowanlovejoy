@@ -44,12 +44,6 @@ GLuint shaderProgram{};
 
 // Camera
 Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
-auto lastX{static_cast<float>(screenWidth) / 2.0f};
-auto lastY{static_cast<float>(screenHeight) / 2.0f};
-auto firstMouse{true};
-
-// Delta time
-float deltaTime{};
 
 //----------------------------------------------------------------------------
 //
@@ -237,6 +231,10 @@ void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
 // Callback on mouse cursor input
 void mouseCallback(struct GLFWwindow* window, double xPos, double yPos)
 {
+	static auto firstMouse{true};
+	static auto lastX{static_cast<float>(screenWidth) / 2.0f};
+	static auto lastY{static_cast<float>(screenHeight) / 2.0f};
+
 	// Handle first mouse input upon capture
 	if (firstMouse)
 	{
@@ -247,8 +245,8 @@ void mouseCallback(struct GLFWwindow* window, double xPos, double yPos)
 	}
 	
 	// Calculate mouse offset since last frame
-	auto xOffset{xPos - lastX};
-	auto yOffset{lastY - yPos}; // Y coordinates go from bottom top so operands are reverse from xOffset
+	const auto xOffset{xPos - lastX};
+	const auto yOffset{lastY - yPos}; // Y coordinates go from bottom top so operands are reverse from xOffset
 	lastX = xPos;
 	lastY = yPos;
 
@@ -256,7 +254,7 @@ void mouseCallback(struct GLFWwindow* window, double xPos, double yPos)
 }
 
 // Process latest input received
-void processReceivedInput(GLFWwindow* window)
+void processReceivedInput(GLFWwindow* window, float deltaTime)
 {
 	// Close window when escape is pressed
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -274,15 +272,17 @@ void processReceivedInput(GLFWwindow* window)
 }
 
 // Calculate time since last frame -- the delta
-void calcDeltaTime()
+float calcDeltaTime()
 {
 	static auto timeLast{0.0f};
 
 	const auto timeNow{static_cast<float>(glfwGetTime())};
 	
-	deltaTime = timeNow - timeLast;
+	const auto deltaTime{timeNow - timeLast};
 	
 	timeLast = timeNow;
+
+	return deltaTime;
 }
 
 //----------------------------------------------------------------------------
@@ -324,9 +324,9 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		calcDeltaTime();
+		const auto deltaTime{calcDeltaTime()};
 		
-		processReceivedInput(window);
+		processReceivedInput(window, deltaTime);
 		
 		// uncomment to draw only wireframe
 		// 
