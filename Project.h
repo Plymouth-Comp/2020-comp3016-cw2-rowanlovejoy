@@ -5,7 +5,7 @@
 
 void init();
 void loadTexture(GLuint& texture, const std::string& texturePath);
-void update(float deltaTime);
+void update(struct GLFWwindow* window, float deltaTime);
 void display();
 void frameBufferResizeCallback(struct GLFWwindow* window, int width, int height);
 void mouseCallback(struct GLFWwindow* window, double xPos, double yPos);

@@ -5,9 +5,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "Project.h"
+#include "shader.h"
 #include "camera.h"
 #include "stb_image.h"
-#include "LoadShaders.h"
+//#include "LoadShaders.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GLFW/glfw3.h>
@@ -40,7 +41,7 @@ GLuint VBOs[numVBOs]{};
 GLuint textures[numTextures]{};
 
 // Shader program
-GLuint shaderProgram{};
+std::unique_ptr<Shader> shaderProgram{};
 
 // Camera
 Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
@@ -51,16 +52,20 @@ Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
 //
 void init()
 {
-	// GLEW provides functionality to load shaders from files
-	ShaderInfo shaders[]
-	{
-		{GL_VERTEX_SHADER, "media/shader.vert"},
-		{GL_FRAGMENT_SHADER, "media/shader.frag"},
-		{GL_NONE, nullptr}
-	};
+	//// GLEW provides functionality to load shaders from files
+	//ShaderInfo shaders[]
+	//{
+	//	{GL_VERTEX_SHADER, "media/shader.vert"},
+	//	{GL_FRAGMENT_SHADER, "media/shader.frag"},
+	//	{GL_NONE, nullptr}
+	//};
 
-	shaderProgram = LoadShaders(shaders);
-	glUseProgram(shaderProgram);
+	//shaderProgram = LoadShaders(shaders);
+	//glUseProgram(shaderProgram);
+
+	// Shader program needs to be globally accessible but not initialised until after GLFW because constructor depends on OpenGL context
+	shaderProgram = std::unique_ptr<Shader>{new Shader{"media/shader.vert", "media/shader.frag"}};
+	shaderProgram->use();
 
 	constexpr GLfloat vertices[]{
 	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -143,7 +148,8 @@ void init()
 	glEnableVertexAttribArray(posTexCoord);
 
 	loadTexture(textures[textFirst], "media/textures/awesomeface.png");
-	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+	//glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+	shaderProgram->setUniform("texture1", 0);
 }
 
 void loadTexture(GLuint& texture, const std::string& texturePath)
@@ -166,8 +172,9 @@ void loadTexture(GLuint& texture, const std::string& texturePath)
 	GLint width{};
 	GLint height{};
 	GLint nrChannels{};
-	
-	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+
+	// awesomeface.png needs to be flipped vertically
+	stbi_set_flip_vertically_on_load(true);
 	const auto textureData{stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0)};
 	if (!textureData)
 		std::cout << "Failed to load texture\n";
@@ -179,8 +186,10 @@ void loadTexture(GLuint& texture, const std::string& texturePath)
 	stbi_image_free(textureData);
 }
 
-void update()
+void update(GLFWwindow* window, float deltaTime)
 {
+	processReceivedInput(window, deltaTime);
+	
 	// creating the model matrix
 	auto model{glm::mat4{1.0f}};
 	//model = glm::scale(model, glm::vec3{2.0f, 2.0f, 2.0f});
@@ -198,8 +207,9 @@ void update()
 	const auto mvp{projection * view * model};
 
 	//adding the Uniform to the shader
-	const auto mvpLoc{glGetUniformLocation(shaderProgram, "mvp")};
-	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+	/*const auto mvpLoc{glGetUniformLocation(shaderProgram, "mvp")};
+	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));*/
+	shaderProgram->setUniform("mvp", mvp);
 }
 
 //----------------------------------------------------------------------------
@@ -229,8 +239,8 @@ void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
 }
 
 // Callback on mouse cursor input
-void mouseCallback(struct GLFWwindow* window, double xPos, double yPos)
-{
+void mouseCallback(GLFWwindow* window, double xPos, double yPos)
+{	
 	static auto firstMouse{true};
 	static auto lastX{static_cast<float>(screenWidth) / 2.0f};
 	static auto lastY{static_cast<float>(screenHeight) / 2.0f};
@@ -326,13 +336,11 @@ int main()
 	{
 		const auto deltaTime{calcDeltaTime()};
 		
-		processReceivedInput(window, deltaTime);
-		
 		// uncomment to draw only wireframe
 		// 
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
-		update();
+		update(window, deltaTime);
 		display();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
