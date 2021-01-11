@@ -1,33 +1,44 @@
 #pragma once
 
 #include <GL/glew.h>
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 #include <string>
+#include <sstream>
 
 class Shader
 {
 public:
-	// Constructor that builds the shader program
-	Shader(const std::string& vertexPath, const std::string& fragmentPath);
+    // Compile and link the given shaders to a create a usable shader program
+    Shader(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = nullptr);
 
-	// Destructor that deletes the shader program
 	~Shader();
 
-	// Activate the shader program
-	void use() const;
+    // Active the shader for use -- shader must be active before setting uniform values
+    void use() const;
 	
-	// Set the value of the specified uniform
-	void setUniform(const std::string& name, const bool value) const;
-	void setUniform(const std::string& name, const int value) const;
-	void setUniform(const std::string& name, const float value) const;
-	void setUniform(const std::string& name, const glm::mat4& value) const;
+    // Utility functions to set shader uniform values
+    void setUniform(const std::string& name, bool value) const;
+    void setUniform(const std::string& name, int value) const;
+    void setUniform(const std::string& name, float value) const;
+    void setUniform(const std::string& name, const glm::vec2& value) const;
+    void setUniform(const std::string& name, float x, float y) const;
+    void setUniform(const std::string& name, const glm::vec3& value) const;
+    void setUniform(const std::string& name, float x, float y, float z) const;
+    void setUniform(const std::string& name, const glm::vec4& value) const;
+    void setUniform(const std::string& name, float x, float y, float z, float w) const;
+    void setUniform(const std::string& name, const glm::mat2& value) const;
+    void setUniform(const std::string& name, const glm::mat3& value) const;
+    void setUniform(const std::string& name, const glm::mat4& value) const;
 
-	// Get the ID of the shader program
-	inline unsigned int getProgram() const
+	// Get the id of the shader program
+	inline unsigned int getId() const
 	{
-		return shaderProgram;
-	}
+	    return Id;
+    }
+
 private:
-	// The ID of the shaderProgram
-	unsigned int shaderProgram{};
+    unsigned int Id;
+	
+    // Check for shader compilation and linking errors 
+    static void checkShaderErrors(const GLuint& shader, const std::string& type);
 };

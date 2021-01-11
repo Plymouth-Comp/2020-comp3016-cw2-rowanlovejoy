@@ -1,13 +1,13 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <string>
 
 void init();
-void loadTexture(GLuint& texture, const std::string& texturePath);
-void update(struct GLFWwindow* window, float deltaTime);
-void display();
+GLuint loadTexture(const std::string& path);
+void update(GLFWwindow* window, float deltaTime);
 void frameBufferResizeCallback(struct GLFWwindow* window, int width, int height);
-void mouseCallback(struct GLFWwindow* window, double xPos, double yPos);
-void processReceivedInput(struct GLFWwindow* window, float deltaTime);
+void mouseCallback(GLFWwindow* window, double xPos, double yPos);
+void processReceivedInput(GLFWwindow* window, float deltaTime);
 float calcDeltaTime();
