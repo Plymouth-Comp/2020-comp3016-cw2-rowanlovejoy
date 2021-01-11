@@ -5,21 +5,18 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "Project.h"
+#include "model.h"
 #include "shader.h"
 #include "camera.h"
 #include "stb_image.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/fwd.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-#include <vector>
-
-#include "model.h"
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
@@ -40,18 +37,18 @@ enum Text_Ids
 	textFirst
 };
 
-constexpr auto numVAOs{2};
-constexpr auto numVBOs{1};
+constexpr auto NUM_VAOs{2};
+constexpr auto NUM_VBOs{1};
 
-constexpr auto numVertices{36};
-constexpr auto numTextures{1};
+constexpr auto NUM_VERTICES{36};
+constexpr auto NUM_TEXTURES{1};
 
-constexpr auto screenWidth{800};
-constexpr auto screenHeight{600};
+constexpr auto SCREEN_WIDTH{800};
+constexpr auto SCREEN_HEIGHT{600};
 
-GLuint VAOs[numVAOs]{};
-GLuint VBOs[numVBOs]{};
-GLuint textures[numTextures]{};
+GLuint VAOs[NUM_VAOs]{};
+GLuint VBOs[NUM_VBOs]{};
+GLuint textures[NUM_TEXTURES]{};
 
 // Camera
 Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
@@ -59,7 +56,8 @@ Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
 void init()
 {
 	// Contains vertex positions and normals
-	constexpr GLfloat vertices[]{
+	constexpr GLfloat vertices[]
+	{
 		// positions          // normals           // texture coords
 		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -105,10 +103,10 @@ void init()
 	};
 
 	// Buffer initialisation
-	glGenVertexArrays(numVAOs, VAOs);
+	glGenVertexArrays(NUM_VAOs, VAOs);
 	glBindVertexArray(VAOs[objFirst]);
 
-	glGenBuffers(numVBOs, VBOs);
+	glGenBuffers(NUM_VBOs, VBOs);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[Vertices]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -207,8 +205,8 @@ void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
 void mouseCallback(GLFWwindow* window, double xPos, double yPos)
 {
 	static auto firstMouse{true};
-	static auto lastX{static_cast<float>(screenWidth) / 2.0f};
-	static auto lastY{static_cast<float>(screenHeight) / 2.0f};
+	static auto lastX{static_cast<float>(SCREEN_WIDTH) / 2.0f};
+	static auto lastY{static_cast<float>(SCREEN_HEIGHT) / 2.0f};
 
 	// Handle first mouse input upon capture
 	if (firstMouse)
@@ -273,7 +271,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	const auto window{glfwCreateWindow(screenWidth, screenHeight, "Textured Cube", nullptr, nullptr)};
+	const auto window{glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Textured Cube", nullptr, nullptr)};
 	if (!window)
 	{
 		std::cout << "Failed to create GLFW window.\n";
@@ -285,7 +283,7 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	// Viewport
-	glViewport(0, 0, screenWidth, screenHeight);
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, frameBufferResizeCallback);
 
 	// Capture and hide cursor
@@ -314,7 +312,7 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 		// Projection and view matrices -- general and don't change between objects
-		const auto projection{glm::perspective(glm::radians(camera.getFov()), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f)};
+		const auto projection{glm::perspective(glm::radians(camera.getFov()), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f)};
 		const auto view{camera.getViewMatrix()};
 
 		//// Render model

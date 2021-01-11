@@ -37,5 +37,5 @@ private:
 	unsigned int VBO{};
 	unsigned int EBO{};
 
-	void setupMesh();
+	void setUpMesh();
 };

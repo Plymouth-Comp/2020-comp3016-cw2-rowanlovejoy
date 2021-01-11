@@ -9,7 +9,7 @@ class Shader
 {
 public:
     // Compile and link the given shaders to a create a usable shader program
-    Shader(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = nullptr);
+    Shader(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = std::string{});
 
 	~Shader();
 

@@ -1,4 +1,7 @@
 #include "model.h"
+#include "stb_image.h"
+#include <assimp/postprocess.h>
+#include <glm/glm.hpp>
 #include <iostream>
 
 Model::Model(const std::string& path, bool gamma) : gammaCorrection{gamma}
@@ -6,13 +9,14 @@ Model::Model(const std::string& path, bool gamma) : gammaCorrection{gamma}
 	loadSceneFromFile(path);
 }
 
+// Draw the model by sequentially drawing all its constituent meshes
 void Model::draw(const Shader& shader) const
 {
 	for (const auto& mesh : meshes)
 		mesh.draw(shader);
 }
 
-// Load the scene at the given location
+// Load the scene from the given file
 void Model::loadSceneFromFile(const std::string& path)
 {
 	Assimp::Importer importer{};
@@ -169,7 +173,6 @@ std::vector<Texture> Model::storeMaterialTextures(const aiMaterial* mat, aiTextu
 			}
 		}
 
-		
 		if (!skip)
 		{
 			// Create objects for new textures

@@ -7,22 +7,23 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>&
 	this->indices = indices;
 	this->textures = textures;
 
-	setupMesh();
+	setUpMesh();
 }
 
 void Mesh::draw(const Shader& shader) const
 {
+	// First texture of each type will have the index 1
 	unsigned int diffuseNr{1};
 	unsigned int specularNr{1};
 	unsigned int normalNr{1};
 	unsigned int heightNr{1};
 
+	// Set sampler in shader and bind texture for rendering
 	for (auto i{0}; i < textures.size(); ++i)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 
-		// retrieve texture number (the N in diffuse_textureN)
-
+		// Get texture index based on number of existing textures of its type
 		const auto name{textures[i].type};
 		std::string number{};
 		if (name == "texture_diffuse")
@@ -34,9 +35,8 @@ void Mesh::draw(const Shader& shader) const
 		else if (name == "texture_height")
 			number = std::to_string(heightNr++);
 
-		// now set the sampler to the correct texture unit
-		glUniform1i(glGetUniformLocation(shader.getId(), (name + number).c_str()), i);
-		// and finally bind the texture
+		shader.setUniform(name + number, i);
+		
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 
@@ -45,11 +45,10 @@ void Mesh::draw(const Shader& shader) const
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 
-	
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::setupMesh()
+void Mesh::setUpMesh()
 {
 	// Generate vertex array and buffers
 	glGenVertexArrays(1, &VAO);
