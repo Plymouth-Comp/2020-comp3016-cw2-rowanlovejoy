@@ -3,17 +3,18 @@
 #include <assimp/postprocess.h>
 #include <glm/glm.hpp>
 #include <iostream>
+#include <glm/ext/matrix_transform.hpp>
 
-Model::Model(const std::string& path, bool gamma) : gammaCorrection{gamma}
+Model::Model(const std::string& path)
 {
 	loadSceneFromFile(path);
 }
 
 // Draw the model by sequentially drawing all its constituent meshes
-void Model::draw(const Shader& shader) const
+void Model::draw(const Shader& shader, const glm::mat4& trans) const
 {
-	for (const auto& mesh : meshes)
-		mesh.draw(shader);
+	for (const auto& mesh : Meshes)
+		mesh.draw(shader, trans);
 }
 
 // Load the scene from the given file
@@ -32,7 +33,7 @@ void Model::loadSceneFromFile(const std::string& path)
 	}
 
 	// Cache the directory of the loaded file
-	directory = path.substr(0, path.find_last_of('/'));
+	Directory = path.substr(0, path.find_last_of('/'));
 	
 	getMeshesInNode(scene->mRootNode, scene);
 }
@@ -45,7 +46,7 @@ void Model::getMeshesInNode(const aiNode* node, const aiScene* scene)
 	{
 		// Node contains only indices of objects in the scene, so use them retrieve the actual meshes
 		const auto mesh{scene->mMeshes[node->mMeshes[i]]};
-		meshes.push_back(storeMeshData(mesh, scene));
+		Meshes.push_back(storeMeshData(mesh, scene));
 	}
 
 	// Repeat above for all sub-nodes (if any)
@@ -160,12 +161,12 @@ std::vector<Texture> Model::storeMaterialTextures(const aiMaterial* mat, aiTextu
 		
 		// Skip creating objects for textures that have already been loaded and cached
 		bool skip{false};
-		for (auto j{0}; j < texturesLoaded.size(); ++j)
+		for (auto j{0}; j < TexturesLoaded.size(); ++j)
 		{
 			// Textures with identical file paths are assumed to be the same
-			if (std::strcmp(texturesLoaded[j].path.data(), str.C_Str()) == 0)
+			if (std::strcmp(TexturesLoaded[j].Path.data(), str.C_Str()) == 0)
 			{
-				textures.push_back(texturesLoaded[j]);
+				textures.push_back(TexturesLoaded[j]);
 				
 				skip = true;
 				
@@ -177,13 +178,13 @@ std::vector<Texture> Model::storeMaterialTextures(const aiMaterial* mat, aiTextu
 		{
 			// Create objects for new textures
 			Texture texture{};
-			texture.id = loadTextureFromFile(str.C_Str(), directory);
-			texture.type = typeName;
-			texture.path = str.C_Str();
+			texture.Id = loadTextureFromFile(str.C_Str(), Directory);
+			texture.Type = typeName;
+			texture.Path = str.C_Str();
 			textures.push_back(texture);
 			
 			// Store it as texture loaded for entire model, to prevent unnecessarily loading duplicate textures.
-			texturesLoaded.push_back(texture);  
+			TexturesLoaded.push_back(texture);  
 		}
 	}
 

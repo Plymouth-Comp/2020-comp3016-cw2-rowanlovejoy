@@ -16,9 +16,9 @@ struct Vertex
 
 struct Texture
 {
-	unsigned int id{};
-	std::string type{};
-	std::string path{};
+	unsigned int Id{};
+	std::string Type{};
+	std::string Path{};
 };
 
 class Mesh
@@ -26,12 +26,12 @@ class Mesh
 public:
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
 
-	void draw(const Shader& shader) const;
+	void draw(const Shader& shader, const glm::mat4& transform) const;
 
 private:
-	std::vector<Vertex> vertices{};
-	std::vector<unsigned int> indices{};
-	std::vector<Texture> textures{};
+	std::vector<Vertex> Vertices{};
+	std::vector<unsigned int> Indices{};
+	std::vector<Texture> Textures{};
 	unsigned int VAO{};
 
 	unsigned int VBO{};

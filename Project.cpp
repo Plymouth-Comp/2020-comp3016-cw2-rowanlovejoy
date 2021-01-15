@@ -5,9 +5,11 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "Project.h"
+#include "game.h"
+#include "gameobject.h"
 #include "model.h"
 #include "shader.h"
-#include "camera.h"
+#include "Character.h"
 #include "stb_image.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -50,8 +52,7 @@ GLuint VAOs[NUM_VAOs]{};
 GLuint VBOs[NUM_VBOs]{};
 GLuint textures[NUM_TEXTURES]{};
 
-// Camera
-Camera camera{glm::vec3{0.0f, 0.0f, 3.0f}};
+Game gameInstance{SCREEN_WIDTH, SCREEN_HEIGHT};
 
 void init()
 {
@@ -223,25 +224,51 @@ void mouseCallback(GLFWwindow* window, double xPos, double yPos)
 	lastX = xPos;
 	lastY = yPos;
 
-	camera.processMouseMovement(xOffset, yOffset);
+	gameInstance.setMouseInput(xOffset, yOffset);
+}
+
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+	gameInstance.setScrollInput(xOffset, yOffset);
 }
 
 // Process latest input received
-void processReceivedInput(GLFWwindow* window, float deltaTime)
+void keyInputCallback(GLFWwindow* window, int key, int scanCode, int action, int mode)
 {
 	// Close window when escape is pressed
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	// Camera movement
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.processKeyboard(CameraMovement::FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.processKeyboard(CameraMovement::BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.processKeyboard(CameraMovement::LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.processKeyboard(CameraMovement::RIGHT, deltaTime);
+	if (key >= 0 && key < 1024)
+	{
+		if (action == GLFW_PRESS)
+			gameInstance.setKeyState(key, true);
+		else if (action == GLFW_RELEASE)
+			gameInstance.setKeyState(key, false);
+	}
+	
+	//// Camera movement
+	//if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::FORWARD, g_deltaTime);
+	//if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::BACKWARD, g_deltaTime);
+	//if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::LEFT, g_deltaTime);
+	//if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::RIGHT, g_deltaTime);
+}
+
+void processInput(GLFWwindow* window, float deltaTime)
+{
+	//// Camera movement
+	//if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::FORWARD, deltaTime);
+	//if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::BACKWARD, deltaTime);
+	//if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::LEFT, deltaTime);
+	//if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	//	camera.processKeyboard(CameraMovement::RIGHT, deltaTime);
 }
 
 // Calculate time since last frame -- the delta
@@ -266,10 +293,10 @@ int main()
 {
 	glfwInit();
 
-	// Using OpenGL 4.5 Core 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, false);
 
 	const auto window{glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Textured Cube", nullptr, nullptr)};
 	if (!window)
@@ -282,52 +309,60 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 
-	// Viewport
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-	glfwSetFramebufferSizeCallback(window, frameBufferResizeCallback);
-
 	// Capture and hide cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// Register callback to call on mouse input
 	glfwSetCursorPosCallback(window, mouseCallback);
+	glfwSetScrollCallback(window, scrollCallback);
+	// Register callback to call on keyboard input
+	glfwSetKeyCallback(window, keyInputCallback);
+	glfwSetFramebufferSizeCallback(window, frameBufferResizeCallback);
 
+	// Viewport
 	glewInit();
 
-	init();
+	//init();
 
 	stbi_set_flip_vertically_on_load(true);
 
-	//// Shaders
-	//const Shader ourShader{"shaders/shader.vert", "shaders/shader.frag"};
+	// OpenGL config
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glEnable(GL_DEPTH_TEST);
 
-	//// Load model
-	//const Model ourModel{"media/backpack/backpack.obj"};
+	gameInstance.init();
 
+	//Shader basicShader{"shaders/shader.vert", "shaders/shader.frag"};
+	//Model platformModel{"media/platform/platform.obj"};
+	//GameObject platformObject{platformModel, glm::vec3{0.0f}};
+
+	//const auto projection{glm::perspective(glm::radians(camera.getFov()), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f)};
+	////basicShader.use();
+	//basicShader.setUniform("projection", projection);
+	
 	while (!glfwWindowShouldClose(window))
 	{
-		processReceivedInput(window, calcDeltaTime());
+		const auto deltaTime{calcDeltaTime()};
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glfwPollEvents();
+
+		//processInput(window, deltaTime);
+
+		gameInstance.processInput();
+
+		gameInstance.update(deltaTime);
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
 
-		// Projection and view matrices -- general and don't change between objects
-		const auto projection{glm::perspective(glm::radians(camera.getFov()), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f)};
-		const auto view{camera.getViewMatrix()};
+		//// View matrix
+		//const auto view{camera.getViewMatrix()};
+		//basicShader.setUniform("view", view);
 
-		//// Render model
-		//ourShader.use();
-		//ourShader.setUniform("projection", projection);
-		//ourShader.setUniform("view", view);
+		//platformObject.draw(basicShader);
 
-		//auto model{glm::mat4{1.0f}};
-		//model = glm::translate(model, glm::vec3{0.0f, 0.0f, 0.0f});
-		//model = glm::scale(model, glm::vec3{1.0f, 1.0f, 1.0f});
-		//ourShader.setUniform("model", model);
-		//ourModel.draw(ourShader);
+		gameInstance.render();
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 
 	glfwDestroyWindow(window);

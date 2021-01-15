@@ -11,15 +11,14 @@
 class Model
 {
 public:
-	Model(const std::string& path, bool gamma = false);
+	Model(const std::string& path);
 
-	void draw(const Shader& shader) const;
+	void draw(const Shader& shader, const glm::mat4& trans) const;
 
 private:
-	std::vector<Texture> texturesLoaded{};
-	std::vector<Mesh> meshes{};
-	std::string directory{};
-	bool gammaCorrection{};
+	std::vector<Texture> TexturesLoaded{};
+	std::vector<Mesh> Meshes{};
+	std::string Directory{};
 
 	void loadSceneFromFile(const std::string& path);
 

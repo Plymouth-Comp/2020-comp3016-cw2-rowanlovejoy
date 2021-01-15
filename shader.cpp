@@ -92,11 +92,6 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath, c
 		glDeleteShader(geometry);
 }
 
-Shader::~Shader()
-{
-	glDeleteProgram(Id);
-}
-
 void Shader::use() const
 {
 	glUseProgram(Id);

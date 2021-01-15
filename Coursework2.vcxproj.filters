@@ -7,12 +7,6 @@
     <ClCompile Include="Project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoadShaders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -22,14 +16,23 @@
     <ClCompile Include="mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gameobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="visibleobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h">
-      <Filter>Header FIles</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadShaders.h">
-      <Filter>Header FIles</Filter>
-    </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>Header FIles</Filter>
     </ClInclude>
@@ -43,6 +46,21 @@
       <Filter>Header FIles</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="gameobject.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="visibleobject.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
       <Filter>Header FIles</Filter>
     </ClInclude>
   </ItemGroup>
