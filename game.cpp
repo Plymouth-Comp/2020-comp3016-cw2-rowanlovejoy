@@ -4,7 +4,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <tuple>
 
-Game::Game(int width, int height) : State{GameState::GAME_ACTIVE}, Keys{}, ScreenWidth{width}, ScreenHeight{height}, GameObjects{}, Shaders{}, PlayerCharacter{glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec3{3.0f}, 0.85f} { }
+Game::Game(int width, int height) : State{GameState::GAME_ACTIVE}, Keys{}, ScreenWidth{width}, ScreenHeight{height}, GameObjects{}, Shaders{}, PlayerCharacter{glm::vec3{1.0f, 1.5f, 1.0f}, glm::vec3{3.0f}, 0.85f} { }
 
 // Initialise the game, including creating game objects and setting their initial positions, and setting other unchanging values
 void Game::init()
@@ -221,7 +221,7 @@ void Game::applyGravity()
 void Game::checkGameOver()
 {
 	constexpr auto minHeight{-10.0f};
-	constexpr auto startPos{glm::vec3{0.0f, 1.5f, 0.0f}};
+	constexpr auto startPos{glm::vec3{1.0f, 1.5f, 1.0f}};
 
 	if (PlayerCharacter.getPosition().y <= minHeight)
 		PlayerCharacter.setPosition(startPos);
