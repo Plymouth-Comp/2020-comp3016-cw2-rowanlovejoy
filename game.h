@@ -31,7 +31,7 @@ public:
 	Game(int width, int height);
 	void init();
 	void processInput();
-	void update(double deltaTime);
+	void update();
 	void render();
 	void setKeyState(int key, bool pressed);
 	void setMouseInput(float xOffset, float yOffset);

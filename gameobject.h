@@ -14,7 +14,7 @@ public:
 	void setPosition(const glm::vec3& newPos)
 	{
 		Position = newPos;
-	};
+	}
 	
 	const glm::vec3& getPosition() const
 	{
@@ -25,14 +25,7 @@ public:
 	{
 		return Size;
 	}
-
-	const glm::vec3& getVelocity() const
-	{
-		return Velocity;
-	}
-
 protected:
 	glm::vec3 Position;
 	glm::vec3 Size;
-	glm::vec3 Velocity;
 };

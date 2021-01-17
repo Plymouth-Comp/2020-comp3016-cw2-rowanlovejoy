@@ -80,9 +80,6 @@
     <Filter Include="Shader Files">
       <UniqueIdentifier>{256a8f7c-ac68-4b19-beba-b9d787375c02}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Third Party">
-      <UniqueIdentifier>{dd7cd015-a0ad-4184-a6d0-96b4d871b761}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\textures\awesomeface.png">

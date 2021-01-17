@@ -13,7 +13,7 @@ void Game::init()
 
 	// Initialise sky cube
 	const Model skycubeModel{"media/skycube/skycube.obj"};
-	GameObjects.emplace_back(new VisibleObject{glm::vec3{0.0f}, glm::vec3{0.0f}, skycubeModel, glm::vec3{10.0f}});
+	GameObjects.emplace_back(new VisibleObject{glm::vec3{0.0f}, glm::vec3{0.0f}, skycubeModel, glm::vec3{20.0f}});
 	
 	// Initialise level objects
 	const Model platformModel{"media/platform/platform.obj"};
@@ -51,11 +51,21 @@ void Game::init()
 		platformModel
 	});
 	GameObjects.emplace_back(new VisibleObject{
-		glm::vec3{20.0f, -2.0f, 0.0f},
+		glm::vec3{17.5f, -2.5f, -9.0f},
+		platformSize,
+		platformModel
+	});
+	GameObjects.emplace_back(new VisibleObject{
+		glm::vec3{22.0f, -1.0f, -8.5f},
+		platformSize,
+		platformModel
+	});
+	GameObjects.emplace_back(new VisibleObject{
+		glm::vec3{22.0f, -3.0f, -1.0f},
 		glm::vec3{5.0f, 1.0f, 5.0f},
 		platformModel,
 		glm::vec3{3.0f, 1.0f, 3.0f},
-		glm::vec3{1.5f, 0.0f, 1.5f}
+		glm::vec3{1.75f, 0.0f, 1.75f}
 	});
 
 	// Projection matrix doesn't change so can be initialised here
@@ -85,13 +95,13 @@ void Game::processInput()
 		PlayerCharacter.processKeyboard(PlayerMovement::JUMP_RELEASED);
 }
 
-void Game::update(double deltaTime)
+void Game::update()
 {
 	// Vertically oscillate platforms
 	for (auto i{2}; i < GameObjects.size() - 1; ++i)
 	{
 		const auto currentPos{GameObjects[i]->getPosition()};
-		const auto newPos{currentPos + glm::vec3{0.0f, sin(deltaTime) * i * 0.0035, 0.0f}};
+		const auto newPos{currentPos + glm::vec3{0.0f, static_cast<float>(sin(glfwGetTime())) * i * 0.0035f, 0.0f}};
 		GameObjects[i]->setPosition(newPos);
 	}
 	
@@ -201,8 +211,6 @@ void Game::applyGravity()
 	const auto newPos{PlayerCharacter.getPosition() - glm::vec3{0.0f, gravity, 0.0f}};
 
 	PlayerCharacter.setPosition(newPos);
-
-	//PlayerCharacter.addMovementInput(glm::vec3{0.0f, -gravity, 0.0f});
 }
 
 void Game::checkGameOver()
