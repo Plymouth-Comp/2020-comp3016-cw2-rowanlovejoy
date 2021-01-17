@@ -18,7 +18,7 @@ void Mesh::draw(const Shader& shader, const glm::mat4& transform) const
 	unsigned int normalNr{1};
 	unsigned int heightNr{1};
 
-	//shader.use();
+	shader.use();
 	
 	// Set sampler in shader and bind texture for rendering
 	for (auto i{0}; i < Textures.size(); ++i)

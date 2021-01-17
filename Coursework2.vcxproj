@@ -159,7 +159,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameobject.cpp" />
@@ -171,7 +170,6 @@
     <ClCompile Include="visibleobject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameobject.h" />
@@ -184,10 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shaders\colourcube.frag" />
-    <None Include="shaders\colourcube.vert" />
-    <None Include="shaders\lightsource.frag" />
-    <None Include="shaders\lightsource.vert" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
   </ItemGroup>

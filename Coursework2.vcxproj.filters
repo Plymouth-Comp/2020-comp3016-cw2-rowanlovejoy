@@ -28,9 +28,6 @@
     <ClCompile Include="character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mesh.h">
@@ -60,24 +57,9 @@
     <ClInclude Include="character.h">
       <Filter>Header FIles</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header FIles</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shaders\colourcube.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shaders\colourcube.vert">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shaders\lightsource.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shaders\lightsource.vert">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="shaders\shader.frag">
       <Filter>Shader Files</Filter>
     </None>
@@ -97,6 +79,9 @@
     </Filter>
     <Filter Include="Shader Files">
       <UniqueIdentifier>{256a8f7c-ac68-4b19-beba-b9d787375c02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party">
+      <UniqueIdentifier>{dd7cd015-a0ad-4184-a6d0-96b4d871b761}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

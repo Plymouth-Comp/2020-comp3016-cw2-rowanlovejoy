@@ -31,7 +31,7 @@ public:
 	Game(int width, int height);
 	void init();
 	void processInput();
-	void update(float deltaTime);
+	void update(double deltaTime);
 	void render();
 	void setKeyState(int key, bool pressed);
 	void setMouseInput(float xOffset, float yOffset);
@@ -48,8 +48,8 @@ private:
 	Character PlayerCharacter;
 	
 	void doCollisions();
-	void applyGravity(float deltaTime);
-	void applyResistance(float deltaTime);
+	void applyGravity();
+	void checkGameOver();
 	static Collision checkCollision(const Character& camera, const GameObject& object);
 	static Direction getVectorDirection(const glm::vec3& target);
 };

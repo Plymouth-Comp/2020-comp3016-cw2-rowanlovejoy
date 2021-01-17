@@ -10,9 +10,11 @@ public:
 	virtual ~GameObject() = default;
 	GameObject(const glm::vec3& pos, const glm::vec3& siz, const glm::vec3& vel = glm::vec3{0.0f});
 	virtual void draw(const Shader& shader) const;
-	void setPosition(const glm::vec3& newPos);
-	virtual void move(float deltaTime);
-	virtual void addMovementInput(const glm::vec3& direction);
+	
+	void setPosition(const glm::vec3& newPos)
+	{
+		Position = newPos;
+	};
 	
 	const glm::vec3& getPosition() const
 	{
