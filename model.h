@@ -8,6 +8,7 @@
 #include <fstream>
 #include <vector>
 
+// Class representing a 3D model composed of one or meshes. Handles loading model data from file using Assimp and rendering constituent meshes.
 class Model
 {
 public:

@@ -9,7 +9,7 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath, c
 	std::string fragmentCode{};
 	std::string geometryCode{};
 
-	// Read in contents of shader files
+	// Read contents of shader files into memory
 	try
 	{
 		std::ifstream vShaderFile{};

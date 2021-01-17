@@ -21,6 +21,7 @@ struct Texture
 	std::string Path{};
 };
 
+// Class representing a 3D mesh that can be rendered
 class Mesh
 {
 public:

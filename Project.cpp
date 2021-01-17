@@ -7,11 +7,11 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-#define BUFFER_OFFSET(a) ((void*)(a))
-
+// Constants defining viewport horizontal and vertical resolution
 constexpr auto SCREEN_WIDTH{1280};
 constexpr auto SCREEN_HEIGHT{720};
 
+// Game instance is global to enable access by GLFW callbacks
 Game gameInstance{SCREEN_WIDTH, SCREEN_HEIGHT};
 
 // Initialise GLFW and run game loop

@@ -10,6 +10,7 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>&
 	setUpMesh();
 }
 
+// Render the mesh using the provided shader and transform
 void Mesh::draw(const Shader& shader, const glm::mat4& transform) const
 {
 	// First texture of each type will have the index 1
@@ -52,6 +53,7 @@ void Mesh::draw(const Shader& shader, const glm::mat4& transform) const
 	glActiveTexture(GL_TEXTURE0);
 }
 
+// Configure OpenGL buffers and attribute pointers needed for drawing the mesh
 void Mesh::setUpMesh()
 {
 	// Generate vertex array and buffers

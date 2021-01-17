@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Character.h"
+#include "character.h"
 #include "gameobject.h"
 #include <vector>
 
@@ -25,6 +25,7 @@ enum class Direction
 // Type to contain data about collisions between the player and other objects
 typedef std::tuple<bool, Direction, glm::vec3> Collision;
 
+// Class representing an instance of the game, defining its initialisation, update, and render behaviour. Also receives inputs from external window system, and maintains references to in-game objects and the player character.
 class Game
 {
 public:

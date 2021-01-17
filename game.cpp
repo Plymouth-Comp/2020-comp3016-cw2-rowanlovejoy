@@ -6,6 +6,7 @@
 
 Game::Game(int width, int height) : State{GameState::GAME_ACTIVE}, Keys{}, ScreenWidth{width}, ScreenHeight{height}, GameObjects{}, Shaders{}, PlayerCharacter{glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec3{3.0f}, 0.85f} { }
 
+// Initialise the game, including creating game objects and setting their initial positions, and setting other unchanging values
 void Game::init()
 {
 	// Initialise shaders
@@ -61,7 +62,7 @@ void Game::init()
 		platformModel
 	});
 	GameObjects.emplace_back(new VisibleObject{
-		glm::vec3{22.0f, -3.0f, -1.0f},
+		glm::vec3{30.0f, -4.5f, -8.5f},
 		glm::vec3{5.0f, 1.0f, 5.0f},
 		platformModel,
 		glm::vec3{3.0f, 1.0f, 3.0f},
@@ -74,9 +75,10 @@ void Game::init()
 	Shaders[0].setUniform("projection", projection);
 }
 
+// Handle received keyboard input by triggering functionality in controllable GameObjects
 void Game::processInput()
 {
-	// Camera movement
+	// Send keyboard movement input to the player character
 	if (Keys[GLFW_KEY_W])
 		PlayerCharacter.processKeyboard(PlayerMovement::FORWARD);
 	if (Keys[GLFW_KEY_S])
@@ -85,25 +87,25 @@ void Game::processInput()
 		PlayerCharacter.processKeyboard(PlayerMovement::LEFT);
 	if (Keys[GLFW_KEY_D])
 		PlayerCharacter.processKeyboard(PlayerMovement::RIGHT);
-	if (Keys[GLFW_KEY_Q])
-		PlayerCharacter.processKeyboard(PlayerMovement::UP);
-	if (Keys[GLFW_KEY_E])
-		PlayerCharacter.processKeyboard(PlayerMovement::DOWN);
 	if (Keys[GLFW_KEY_SPACE])
 		PlayerCharacter.processKeyboard(PlayerMovement::JUMP_PRESSED);
 	if (!Keys[GLFW_KEY_SPACE])
 		PlayerCharacter.processKeyboard(PlayerMovement::JUMP_RELEASED);
 }
 
+// Update the positions of GameObjects, apply forces, check collisions, and perform other relevant per-tick checks (e.g., game over)
 void Game::update()
 {
+	// Consume inputted velocity and move the character
+	PlayerCharacter.move();
+	
 	// Vertically oscillate platforms
 	for (auto i{2}; i < GameObjects.size() - 1; ++i)
-	{
-		const auto currentPos{GameObjects[i]->getPosition()};
-		const auto newPos{currentPos + glm::vec3{0.0f, static_cast<float>(sin(glfwGetTime())) * i * 0.0035f, 0.0f}};
-		GameObjects[i]->setPosition(newPos);
-	}
+		GameObjects[i]->addVelocity(glm::vec3{0.0f, static_cast<float>(sin(glfwGetTime())) * i * 0.0035f, 0.0f});
+
+	// Move any objects that have velocity
+	for (auto& obj : GameObjects)
+		obj->move();
 	
 	// After do object movement, check apply gravity and do collisions
 	applyGravity();
@@ -111,6 +113,7 @@ void Game::update()
 	checkGameOver();
 }
 
+// Render all GameObjects and get the latest view matrix (which defines the player's view) from player character
 void Game::render()
 {
 	// Don't render anything without shaders
@@ -125,6 +128,7 @@ void Game::render()
 		obj->draw(Shaders[0]);
 }
 
+// Check for and resolve collisions between the player character and game objects. Also set the grounded state of the player (used for jumping logic)
 void Game::doCollisions()
 {
 	static auto groundColCount{0};
@@ -204,15 +208,16 @@ void Game::doCollisions()
 	}
 }
 
+// Apply the force of gravity to the player, adding negative Y-axis velocity
 void Game::applyGravity()
 {
 	constexpr auto gravity{0.05f};
 
-	const auto newPos{PlayerCharacter.getPosition() - glm::vec3{0.0f, gravity, 0.0f}};
-
-	PlayerCharacter.setPosition(newPos);
+	// Apply force of gravity
+	PlayerCharacter.addVelocity(glm::vec3{0.0f, -gravity, 0.0f});
 }
 
+// Check if the player is has fallen too far and if so reset their position
 void Game::checkGameOver()
 {
 	constexpr auto minHeight{-10.0f};
@@ -222,6 +227,7 @@ void Game::checkGameOver()
 		PlayerCharacter.setPosition(startPos);
 }
 
+// Get the direction the player is a colliding with an object from
 Direction Game::getVectorDirection(const glm::vec3& target)
 {
 	constexpr glm::vec3 directions[]
@@ -253,23 +259,25 @@ Direction Game::getVectorDirection(const glm::vec3& target)
 	return static_cast<Direction>(bestMatch);
 }
 
+// Set the pressed state of a particular key
 void Game::setKeyState(int key, bool pressed)
 {
 	Keys[key] = pressed;
 }
 
+// Get input (cursor X and Y offsets since last update) from a mouse cursor
 void Game::setMouseInput(float xOffset, float yOffset)
 {
 	PlayerCharacter.processMouseMovement(xOffset, yOffset);
 }
 
+// Get input (scroll wheel X and Y offset) from a mouse scroll wheel
 void Game::setScrollInput(float xOffset, float yOffset)
 {
-	const auto newSpeed{PlayerCharacter.getMovementSpeed() + yOffset};
 
-	PlayerCharacter.setMovementSpeed(newSpeed);
 }
 
+// Check for collision between AABB objects and a player character defined by a sphere
 Collision Game::checkCollision(const Character& camera, const GameObject& object)
 {
 	const auto cameraPos{camera.getPosition()};
@@ -310,7 +318,7 @@ Collision Game::checkCollision(const Character& camera, const GameObject& object
 	// Get vector between circle's centre and closest AABB point, and check if length is less than or equal to circle's radius
 	const auto length{closestPoint - cameraCentre};
 
-	// If no collision...
+	// If collision...
 	if (glm::length(length) < cameraRad)
 		return std::make_tuple(true, getVectorDirection(length), length);
 

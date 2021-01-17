@@ -2,6 +2,7 @@
 
 #include "gameobject.h"
 
+// Class representing a GameObject that is represented visually with 3D model. Includes functionality for drawing the model and settings it scale and offset relative to its containing GameObject instance.
 class VisibleObject : public GameObject
 {
 public:

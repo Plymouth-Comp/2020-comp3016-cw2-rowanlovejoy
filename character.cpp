@@ -2,29 +2,28 @@
 
 Character::Character(const glm::vec3& pos, const glm::vec3& siz, float radius) : GameObject{pos, siz}, Front{glm::vec3{0.0f, 0.0f, -1.0f}}, Forward{glm::vec3{0.0f, 0.0f, -1.0f}}, Up{glm::vec3{0.0f, 1.0f, 0.0f}}, Right{}, WorldUp{Up}, Yaw{-90.0f}, Pitch{0.0f}, MovementSpeed{0.035f}, MouseSensitivity{0.1f}, Fov{85.0f}, Radius{radius}, Grounded{false}
 {
-	updateCameraVectors();
+	updateDirectionVectors();
 }
 
+// Respond tp keyboard input received from game instance
 void Character::processKeyboard(PlayerMovement direction)
 {
+	// Move the character on the 2D plane
+	if (direction == PlayerMovement::FORWARD)
+		addVelocity(Forward * MovementSpeed);
+	if (direction == PlayerMovement::BACKWARD)
+		addVelocity(-Forward * MovementSpeed);
+	if (direction == PlayerMovement::RIGHT)
+		addVelocity(Right * MovementSpeed);
+	if (direction == PlayerMovement::LEFT)
+		addVelocity(-Right * MovementSpeed);
+	
+	// Values for jumping logic
 	constexpr auto startingJumpVel{0.25f};
 	static auto jumping{false};
 	static auto jumpPressed{false};
 	static auto jumpCount{0};
 	static auto jumpVel{startingJumpVel};
-
-	if (direction == PlayerMovement::FORWARD)
-		Position += Forward * MovementSpeed;
-	if (direction == PlayerMovement::BACKWARD)
-		Position += -Forward * MovementSpeed;
-	if (direction == PlayerMovement::RIGHT)
-		Position += Right * MovementSpeed;
-	if (direction == PlayerMovement::LEFT)
-		Position += -Right * MovementSpeed;
-	if (direction == PlayerMovement::UP)
-		Position += Up * MovementSpeed;
-	if (direction == PlayerMovement::DOWN)
-		Position += -Up * MovementSpeed;
 
 	if (direction == PlayerMovement::JUMP_PRESSED && Grounded && !jumpPressed)
 	{
@@ -41,9 +40,10 @@ void Character::processKeyboard(PlayerMovement direction)
 		jumpPressed = false;
 	}
 
+	// Climb until velocity is lost
 	if (jumping)
 	{
-		Position += WorldUp * jumpVel;
+		addVelocity(WorldUp * jumpVel);
 		++jumpCount;
 		jumpVel *= 0.95f;
 
@@ -55,7 +55,7 @@ void Character::processKeyboard(PlayerMovement direction)
 		}
 	}
 
-	// If land early, reset jumping
+	// If land early, reset jumping state
 	if (Grounded)
 	{
 		jumping = false;
@@ -64,6 +64,7 @@ void Character::processKeyboard(PlayerMovement direction)
 	}
 }
 
+// Handle mouse input received from game instance
 void Character::processMouseMovement(float xOffset, float yOffset)
 {
 	Yaw += xOffset * MouseSensitivity;
@@ -79,28 +80,30 @@ void Character::processMouseMovement(float xOffset, float yOffset)
 		Pitch = pitchMin;
 
 	// Update Front, Right, and Up Vectors using the updated Euler angles
-	updateCameraVectors();
+	updateDirectionVectors();
 }
 
+// Calculate and return the view matrix based on the player character's current state
 glm::mat4 Character::getViewMatrix() const
 {
 	return lookAt(Position, Position + Front, Up);
 }
 
-void Character::updateCameraVectors()
+// Update direction vectors for the camera view and player character movement
+void Character::updateDirectionVectors()
 {
-	// Calculate new Front vector for camera
+	// Calculate new front vector for camera
 	const auto dirX{cos(glm::radians(Yaw)) * cos(glm::radians(Pitch))};
 	const auto dirY{sin(glm::radians(Pitch))};
 	const auto dirZ{sin(glm::radians(Yaw)) * cos(glm::radians(Pitch))};
 	const auto front{glm::vec3{dirX, dirY, dirZ}};
 	Front = glm::normalize(front);
 
-	// Calculate new Forward vector for character movement -- Y is zero to prevent flying
+	// Calculate new forward vector for character movement -- Y is zero to prevent flying
 	const auto forward{glm::vec3{dirX, 0.0f, dirZ}};
 	Forward = glm::normalize(forward);
 	
-	// also re-calculate the Right and Up vector
-	Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	// Calculate new the right and up vectors
+	Right = glm::normalize(glm::cross(Front, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement
 	Up = glm::normalize(glm::cross(Right, Front));
 }

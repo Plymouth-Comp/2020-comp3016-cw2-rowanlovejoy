@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 
+// Class representing a shader program composed of a vertex and fragment shader, and optionally a geometry shader. Handles loading, compiling, and linking shader code from file, setting uniform values, and activating the shader program for use.
 class Shader
 {
 public:

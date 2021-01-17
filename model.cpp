@@ -17,7 +17,7 @@ void Model::draw(const Shader& shader, const glm::mat4& trans) const
 		mesh.draw(shader, trans);
 }
 
-// Load the scene from the given file
+// Load the scene (collection of meshes) from the given file
 void Model::loadSceneFromFile(const std::string& path)
 {
 	Assimp::Importer importer{};
