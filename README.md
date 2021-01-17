@@ -26,6 +26,7 @@ The user interacts with the game by controlling the movement and other actions o
 ### References
 
 Exact and Ultra (1995) Jumping Flash! [Video Game]. Sony Computer Entertainment.
+
 --------------------------------------------------------------------------------------------------
 
 Please update this file and include the instructions and use this document for your report.
