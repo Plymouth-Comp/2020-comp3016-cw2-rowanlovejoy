@@ -8,7 +8,7 @@
 #include <fstream>
 #include <vector>
 
-// Class representing a 3D model composed of one or meshes. Handles loading model data from file using Assimp and rendering constituent meshes.
+// Class representing a 3D model composed of one or meshes. Handles loading model data from file using Assimp and rendering constituent meshes. Declaration and implementation code is based on example provided by LearnOpenGL.com - source: https://learnopengl.com/Model-Loading/Model
 class Model
 {
 public:

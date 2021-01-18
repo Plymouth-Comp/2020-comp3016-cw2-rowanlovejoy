@@ -21,7 +21,7 @@ struct Texture
 	std::string Path{};
 };
 
-// Class representing a 3D mesh that can be rendered
+// Class representing a 3D mesh that can be rendered. Declaration and implementation code is based on example provided by LearnOpenGL.com - source: https://learnopengl.com/Model-Loading/Mesh
 class Mesh
 {
 public:
