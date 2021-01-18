@@ -35,6 +35,10 @@ Exact and Ultra (1995) Jumping Flash! [Video Game]. Sony Computer Entertainment.
 
 ## Report
 
+## Opening the Visual Studio Solution
+
+To open the project's Visual Studio solution, open the '2020-comp3016-cw2-rowanlovejoy' directory and then open the 'Coursework2.sln' file. The program can be run from within the solution. If an error message appears about a missing Assimp .dll, copy the 'assimp-vc142-mtd.dll' file from the Source directory into same directory as the compiled 'Coursework2.exe' file -- if building in Debug mode with x64, this executable should by default by output to /x64/Debug.
+
 ### User Interaction and Launching
 
 Bounding Box is a 3D first-person platformer video game for Windows, created using C++, OpenGL 4.5 Core, GLFW, GLEW, GLM, Assimp, and stb_image.
@@ -73,7 +77,7 @@ From there, I established the basic gameplay framework – the Game and GameObje
 
 Though much of the starting code was derived from online tutorials, my combination of it into a 3D game is original, incorporating information and examples from a variety of sources. The Game class and GameObject hierarchy were updated to enable polymorphic drawing and movement of objects by adding and consuming velocity. The jumping physics, the extension of the collision detection and resolution algorithm into 3D, and the sky cube are also original. Other original functionality includes the ability to scale and offset of the position of 3D models in the VisualObject class, which was necessary resolve mismatches between visible size and collision size. Throughout there also numerous small improvements to the code to improve clarity and maintainability and to make use of modern C++ programming practices where possible, such as consistent use of const and constexpr, type inference, pass by constant reference, and employing smart pointers to enable polymorphic behaviour with memory safety.
 
-### Changes to Software
+### Changes to Software Used
 
 In the original brief, I stated I would use the Lib Expoxy library (link: https://github.com/anholt/libepoxy) for extension management. I chose this library after reading about its error reporting functionality to report issues, which I felt would ease development by helping me identify and diagnose issues sooner. However, I ran into difficulty setting it up, and decided that due the starting Coursework 2 project already being configured to use GLEW, another extension management library, I decided to drop Lib Epoxy and continue with GLEW instead. Given my understanding of OpenGL and skills at the time, and the time preasure, I believe this was a good choice to save myself effort implementing something that was not entirely necessary. 
 
