@@ -29,11 +29,7 @@ Exact and Ultra (1995) Jumping Flash! [Video Game]. Sony Computer Entertainment.
 
 --------------------------------------------------------------------------------------------------
 
-*Please update this file and include the instructions and use this document for your report.*
-
 ## Video
-
-*insert embeded video here*
 
 **Link to video hosted on YouTube:** https://youtu.be/BaaZ5Q5ExaA
 
@@ -41,17 +37,13 @@ Exact and Ultra (1995) Jumping Flash! [Video Game]. Sony Computer Entertainment.
 
 ### User Interaction and Launching
 
-*How does the user interact with your executable? How do you open and control the software you wrote (exe file)?*
-
-Bounding Box is a 3D first-person platformer video game for Windows, created using C++, OpenGL 4.5 Core, GLFW, GLEW, GLM, and stb_image.
+Bounding Box is a 3D first-person platformer video game for Windows, created using C++, OpenGL 4.5 Core, GLFW, GLEW, GLM, Assimp, and stb_image.
 
 The player controls the game using a keyboard and mouse. The W, A, S, and D keys move the player character left, right, forwards, and backwards on a 2D plane. The space bar triggers a jump, launching the player character upwards. The mouse controls the player view, which determines the forward and backwards direction. Using these controls in combination, the player can navigate the game and complete its platforming challenges. At any time, the player may press the Escape key to instantly quit the game.
 
 The player can launch the game by double left-clicking on its executable in the File Explorer, or right-clicking on it and selecting ‘Open’ from the Context Menu. Gameplay begins immediately upon running the executable, the mouse cursor being captured by the game window. 
 
 ### Program Class and Funnction Layout
-
-*How does the program code work? How do the classes and functions fit together and who does what?*
 
 The program’s main() function initialises the windowing system, GLFW, creating a window for OpenGL to render into and binding functions to receive input and screen resizing callbacks. The main game logic is contained within the Game class, which is instantiated with a global ‘gameInstance’ variable. The Game class defines the components of the core game loop – input, update, and display – but the actual loop that calls these functions resides in main. The game uses fixed time-step for input and update calls, limited to sixty updates per second. This was done as part of efforts to fix an issue where collision was being checked too rapidly, which affected the player character’s jumping ability. Rendering occurs as fast the player’s hardware allows.
 
@@ -72,8 +64,6 @@ The doCollisions() method is also responsible for determining if the player char
 Jumping is the most complex movement ability in the game, requiring multiple variables and if statements. Jumping is initiated by pressing the Space bar and will succeed if the player character is currently grounded and the jump key is not currently pressed. The player cannot send another jump command until they release the jump key. A jump is an action that persists over multiple frames. While jumping, a pulse of upward velocity – positive Y-axis – is added to the player each tick, becoming small each time. Combined with the constant downwards force gravity, this provides a smooth upward motion with believable loss of velocity nearing the top of the jump. The number of pulses, the starting velocity, the velocity decay rate, and the strength of gravity were repeatedly tuned to provide a realistic and satisfying “space jump” effect, fitting the game’s theme. This is perhaps the feature I’m most proud of.
 
 ## What Makes This Project Unique and Starting Point
-
-*What makes your program special and how does it compare to similar things? (Where did you get the idea from? What did you start with? How did you make yours unique? Did you start with a given project?)*
 
 3D first-person platforms are somewhat uncommon in the modern gaming landscape. While first-person games due feature platforming – for example Doom (2016) and Doom Eternal – this is not primary focus. Bounding Box echoes the gameplay style and feel of games including Jumping Flash  – it’s primary inspiration in terms of gameplay and physics feel – and Metroid Prime, both which feature a heavy emphasis on complex platforming in 3D world from a first-person perspective. I wanted to create the feel of leaping high into the air in a low gravity environment, the first-person perspective intensifying the effect of leaping forwards and falling. Compare to Jumping Flash and Metroid Prime, I don’t feel I entirely succeeded in emulating the “powerful” feel of the jumps, but with further adjustment and improvement to the physics system, I feel I could get there.
 
