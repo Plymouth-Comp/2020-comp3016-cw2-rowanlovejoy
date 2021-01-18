@@ -2,6 +2,8 @@
 
 ## Bounding Box: 3D First-Person Platformer Video Game
 
+![Bouding Box Gameplay Demo](https://media.giphy.com/media/be0mPMUo3Ghkcd9TH7/giphy.gif)
+
 ### Rowan Lovejoy (10573747)
 
 --------------------------------------------------------------------------------------------------
