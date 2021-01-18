@@ -35,7 +35,7 @@ Exact and Ultra (1995) Jumping Flash! [Video Game]. Sony Computer Entertainment.
 
 *insert embeded video here*
 
-Video hyperlink: https://youtu.be/BaaZ5Q5ExaA
+**Link to video hosted on YouTube:** https://youtu.be/BaaZ5Q5ExaA
 
 ## Report
 
