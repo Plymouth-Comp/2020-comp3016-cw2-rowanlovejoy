@@ -49,7 +49,7 @@ The player can launch the game by double left-clicking on its executable in the 
 
 Ensure the folders 'media' and 'shaders' and the 'assimp-vc142-mtd.dll' file are in the same folder as the built 'Coursework2.exe' file. These folders and file can be found in the '2020-comp3016-cw2-rowanlovejoy' The application will not launch otherwise.
 
-### Program Class and Funnction Layout
+### Program Class and Function Layout
 
 The program’s main() function initialises the windowing system, GLFW, creating a window for OpenGL to render into and binding functions to receive input and screen resizing callbacks. The main game logic is contained within the Game class, which is instantiated with a global ‘gameInstance’ variable. The Game class defines the components of the core game loop – input, update, and display – but the actual loop that calls these functions resides in main. The game uses fixed time-step for input and update calls, limited to sixty updates per second. This was done as part of efforts to fix an issue where collision was being checked too rapidly, which affected the player character’s jumping ability. Rendering occurs as fast the player’s hardware allows.
 
