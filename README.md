@@ -37,7 +37,7 @@ Exact and Ultra (1995) Jumping Flash! [Video Game]. Sony Computer Entertainment.
 
 ## Opening the Visual Studio Solution
 
-To open the project's Visual Studio solution, open the '2020-comp3016-cw2-rowanlovejoy' directory and then open the 'Coursework2.sln' file. The program can be run from within the solution. If an error message appears about a missing Assimp .dll, copy the 'assimp-vc142-mtd.dll' file from the Source directory into same directory as the compiled 'Coursework2.exe' file -- if building in Debug mode with x64, this executable should by default by output to /x64/Debug.
+To open the project's Visual Studio solution, open the '2020-comp3016-cw2-rowanlovejoy' directory and then open the 'Coursework2.sln' file. **PLEASE NOTE:** Afer building the solution, copy the file 'assimp-vc142-mtd.dll' and the folders 'media' and 'shaders' from the project root into the output folder alongside the compiled Coursework2.exe file (if building in Debug mode with x64, this executable should by default be output to /x64/Debug). Failing to do this will result in the application failing to launch after building with an error about the missing .dll file.
 
 ### User Interaction and Launching
 
@@ -46,6 +46,8 @@ Bounding Box is a 3D first-person platformer video game for Windows, created usi
 The player controls the game using a keyboard and mouse. The W, A, S, and D keys move the player character left, right, forwards, and backwards on a 2D plane. The space bar triggers a jump, launching the player character upwards. The mouse controls the player view, which determines the forward and backwards direction. Using these controls in combination, the player can navigate the game and complete its platforming challenges. At any time, the player may press the Escape key to instantly quit the game.
 
 The player can launch the game by double left-clicking on its executable in the File Explorer, or right-clicking on it and selecting ‘Open’ from the Context Menu. Gameplay begins immediately upon running the executable, the mouse cursor being captured by the game window. 
+
+Ensure the folders 'media' and 'shaders' and the 'assimp-vc142-mtd.dll' file are in the same folder as the built 'Coursework2.exe' file. These folders and file can be found in the '2020-comp3016-cw2-rowanlovejoy' The application will not launch otherwise.
 
 ### Program Class and Funnction Layout
 
